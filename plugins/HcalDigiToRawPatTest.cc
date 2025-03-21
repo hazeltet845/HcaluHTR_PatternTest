@@ -18,7 +18,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TTree.h"
 
-#include "EventFilter/HcalRawToDigi/plugins/PackerHelp.h"
+#include "EventFilter/HcalRawToDigi/interface/PackerHelp.h"
 
 #include <fstream>
 #include <iostream>
