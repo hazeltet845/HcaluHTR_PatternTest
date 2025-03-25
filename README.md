@@ -14,7 +14,7 @@
     scram b -j 8
 
 # Offload RAWSIM QIE11 Data 
-The QIE11 data must be offloaded from the input root file in a format that makes pattern generation possible. The `python/HcalDigiToRawPatTest_cfg.py` config file calls `plugins/HcalDigiToRawPatTest.cc` to offload the QIE11 data to `python/output/offload`. The usage is shown below:
+The QIE11 data must be offloaded from the input root file in a format that makes pattern generation possible. The input root file must contain a tree of QIE11 data frames. The `python/HcalDigiToRawPatTest_cfg.py` config file calls `plugins/HcalDigiToRawPatTest.cc` to offload the QIE11 data to `python/output/offload`. The usage is shown below:
  
     usage: cmsRun HcalDigiToRawPatTest_cfg.py [-i PATH/TO/INPUT.root] [-n EVENTS] [-g GLOBAL_TAG] [-e ERA] [-o OUTPUT_TAG]
 
