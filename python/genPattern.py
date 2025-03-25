@@ -9,7 +9,8 @@ def parseArgs():
         description=''
     )
 
-    parser.add_argument("-o", "--output_dir", action="store", default="./", help="Output directory path")
+    parser.add_argument("-o", "--output_dir", action="store",required=True,default="./", help="Output directory path")
+    parser.add_argument("-i", "--input_tag", action="store", required=True, help="Input file tag (TAG.root)")
     parser.add_argument("-a", "--all",        action="store_true", help="Create pattern for ALL crates and uHTRS")
     parser.add_argument("-c", "--crate",      action="store", help="Crate number for pattern generation")
     parser.add_argument("-u", "--uHTR",       action="store", help="uHTR number for pattern generation")
@@ -112,12 +113,14 @@ def patternWrite(df,outfile,crate,uHTR,max_BX):
 def main():
     args = parseArgs()
 
-    output_dir  = args.output_dir
+    output_dir  = f"output/patterns/{args.output_dir}"
+    input_file  = f"output/offload/{args.input_tag}.root"
     all_uHTR    = args.all
     crate       = args.crate
     uHTR        = args.uHTR
 
-    tree = uproot.open("test.root")['hcalRawData/UHTRTree']
+
+    tree = uproot.open(input_file)['hcalRawData/UHTRTree']
 
     df = tree.arrays(library="pd")
     df['Crate'] = df['uhtrIndex'].apply(getCrate)

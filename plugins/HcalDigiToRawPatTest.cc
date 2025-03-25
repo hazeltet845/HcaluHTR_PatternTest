@@ -85,7 +85,7 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
  
   unsigned int eventNumber = iEvent.id().event();
 
-  std::cout << eventNumber << std::endl;
+  //std::cout << eventNumber << std::endl;
 
   edm::ESHandle<HcalElectronicsMap> item = iSetup.getHandle(tok_electronicsMap_);
   const HcalElectronicsMap* readoutMap = item.product();
