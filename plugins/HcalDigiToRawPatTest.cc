@@ -85,8 +85,6 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
  
   unsigned int eventNumber = iEvent.id().event();
 
-  //std::cout << eventNumber << std::endl;
-
   edm::ESHandle<HcalElectronicsMap> item = iSetup.getHandle(tok_electronicsMap_);
   const HcalElectronicsMap* readoutMap = item.product();
 
@@ -110,10 +108,9 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
       int fiber = eid.fiberIndex();
       int fiberChan = eid.fiberChanId();
       int uhtrIndex_ = ((fiberChan & 0xFF) << 24) | ((fiber & 0xFF) << 16)  | ((slotId & 0xF) << 8) | (crateId & 0xFF);
-     // int presamples = qiedf.presamples();
-     //
+       
       //   convert to hb qie data if hb
-      if (HcalDetId(detid.rawId()).subdet() == HcalSubdetector::HcalBarrel){// || HcalDetId(detid.rawId()).subdet() == HcalSubdetector::HcalEndcap){
+      if ((HcalDetId(detid.rawId()).subdet() == HcalSubdetector::HcalBarrel) && qiedf.flavor() != 3){
 	qiedf = convertHB(qiedf, tdc1_, tdc2_, tdcmax_);
 	uhtrs.addChannel(uhtrIndex_, qiedf, readoutMap, _verbosity);
 
@@ -129,10 +126,6 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
 
   //cout << "****** uHTR Loop ******" << endl;
 
-  /*uint64_t min_crate = 20;
-  uint64_t max_crate = 37;
-  uint64_t min_slot = 1;
-  uint64_t max_slot = 12;*/
 
   std::ofstream file;
 
@@ -142,7 +135,6 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
     //uint64_t fiber = (uhtr->first & 0xFF0000) >> 16;
     //uint64_t fiberChan = (uhtr->first & 0xFF000000) >> 24;
 
-    //uhtrs.finalizeHeadTail(&(uhtr->second), _verbosity);
 
     uhtrIndex = uhtr->first;
       
