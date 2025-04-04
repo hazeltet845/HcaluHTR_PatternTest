@@ -39,6 +39,8 @@ def makeCommandList(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit_dela
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
         seq = "link, fe_rams, setup, 1, 1, 0, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        #seq = "link, fe_rams, setup, 1, 1, 0, load, /root/tdcUMnCode/hcal/hcalUHTR/scripts/uHTRtest/patterns/pattern_test.txt, -1, quit, quit"
+       
         writeSequence(seq)
         seq = "link, init, 99, {}, -1, 1, quit".format(read_delay)
         writeSequence(seq)
@@ -63,12 +65,12 @@ def makeCommandList(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit_dela
             writeSequence(seq)
 
         # Upload LLP-modified 1:1 LUT group0
-        #seq = "trig, luts, 4, 0, {}, -1, quit".format(Lutfpath)
-        #writeSequence(seq)
+        seq = "trig, luts, 4, 0, {}, -1, quit".format("/root/tdcUMnCode/hcal/hcalUHTR/scripts/uHTRtest/HcaluHTR_PatternTest/python/LUT0.txt")
+        writeSequence(seq)
 
         # Set 1:1 LUT group1
-        #seq = "trig, luts, 3, 1, -1, -1, quit"
-        #writeSequence(seq)
+        seq = "trig, luts, 3, 1, -1, -1, quit"
+        writeSequence(seq)
         
         num_tls = 12
 
@@ -107,5 +109,5 @@ if __name__ == "__main__":
         print("live")
     elif local:
         print("Pushing pattern to uHTR locally")
-        #os.system("{} {} -s {} > {}".format(uhtrtool,local_ip,cmdfpath,outputfpath)
+        os.system("{} {} -s {} > {}".format(uhtrtool,local_ip,cmdfpath,outputfpath))
 
