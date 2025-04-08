@@ -137,7 +137,8 @@ def main():
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    
+        os.makedirs(output_dir + "/spy")
+
     if(all_uHTR):
         print("Generating patterns for all uHTRs")
         uHTR_df = df[['Crate', 'Slot']].drop_duplicates()
