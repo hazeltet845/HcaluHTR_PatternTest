@@ -68,48 +68,63 @@ def fillMissingChnls(df):
         
     return pd.Series([fill_adc,fill_tdc])
 
+def printMissingChnls(group):
+    # Compute and print missing channels once per group
+    present_channels = set(group["FibChan"])
+    all_channels = set(range(8))
+    missing_channels = sorted(all_channels - present_channels)
+
+    if missing_channels:
+        bc = group["bunchCrossing"].iloc[0]
+        if(bc == 1):
+            print(f"bunchCrossing {bc}: Missing channels {missing_channels}")
+
+    return fillMissingChnls(group)
+
 def patternWrite(df,outfile,crate,uHTR,max_BX):
     
     num_fib = 24
     for fib in range(num_fib):
-
-        outfile.write('# Fiber %d\n' % fib)
+        #print(f"Crate == {crate} and Slot == {uHTR} and Fiber == {fib}")
         filt = df.query(f"Crate == {crate} and Slot == {uHTR} and Fiber == {fib}")
         
         if not filt.empty:
+            outfile.write('# Fiber %d\n' % fib)
             group = (filt.groupby("bunchCrossing", group_keys=False)
                    .apply(fillMissingChnls)
                    .reset_index(drop=True))
 
             group.columns = ["ADC", "TDC"]
             group['TDC'] = group['TDC'].apply(createTDCWord)
-        else:
-            group = pd.DataFrame()
-            group['bunchCrossing'] = np.arange(1,max_BX+1)
-            group['ADC'] = [np.zeros(8,dtype=int)] * max_BX
-            group['TDC'] = np.ones(max_BX,dtype=int)*0xffff
+            
+            for index, row in group.iterrows():
 
-        for index, row in group.iterrows():
+                bc0 = 1 if index==0 else 0
+                ce = 0
+                capID = index%4 #doesnt matter
+                res = 0
 
-            bc0 = 1 if index==0 else 0
-            ce = 0
-            capID = index%4 #doesnt matter
-            res = 0
+                byte0 = 0xbc #K28.5
+                byte1 = res<<4 | capID<<2 | ce<<1 | bc0
 
-            byte0 = 0xbc #K28.5
-            byte1 = res<<4 | capID<<2 | ce<<1 | bc0
-
-            ADC = row['ADC']
-            TDC = row['TDC']
+                ADC = row['ADC']
+                TDC = row['TDC']
             
 
-            outfile.write("1%02x%02x\n"%(byte1, byte0))
-            outfile.write("0%02x%02x\n"%(ADC[1],ADC[0]))
-            outfile.write("0%02x%02x\n"%( ADC[3],ADC[2] ))
-            outfile.write("0%02x%02x\n"%( ADC[5],ADC[4] ))
-            outfile.write("0%02x%02x\n"%( ADC[7],ADC[6] ))
-            outfile.write("0%04x\n"%(TDC))
+                outfile.write("1%02x%02x\n"%(byte1, byte0))
+                outfile.write("0%02x%02x\n"%(ADC[1],ADC[0]))
+                outfile.write("0%02x%02x\n"%( ADC[3],ADC[2] ))
+                outfile.write("0%02x%02x\n"%( ADC[5],ADC[4] ))
+                outfile.write("0%02x%02x\n"%( ADC[7],ADC[6] ))
+                outfile.write("0%04x\n"%(TDC))
+        #else:
+            #print(f"No data for Crate/Slot/Fiber combo")
+            #group = pd.DataFrame()
+            #group['bunchCrossing'] = np.arange(1,max_BX+1)
+            #group['ADC'] = [np.zeros(8,dtype=int)] * max_BX
+            #group['TDC'] = np.ones(max_BX,dtype=int)*0xffff
 
+        
 def main():
     args = parseArgs()
 

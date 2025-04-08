@@ -45,6 +45,8 @@ private:
   const vector<int> tdc2_;
   static constexpr int tdcmax_ = 49;
 
+  const bool debug = false; 
+
   TTree* tree;
 
   uint32_t uhtrIndex;
@@ -108,7 +110,7 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
       int fiber = eid.fiberIndex();
       int fiberChan = eid.fiberChanId();
       int uhtrIndex_ = ((fiberChan & 0xFF) << 24) | ((fiber & 0xFF) << 16)  | ((slotId & 0xF) << 8) | (crateId & 0xFF);
-       
+
       //   convert to hb qie data if hb
       if ((HcalDetId(detid.rawId()).subdet() == HcalSubdetector::HcalBarrel) && qiedf.flavor() != 3){
 	qiedf = convertHB(qiedf, tdc1_, tdc2_, tdcmax_);
@@ -116,6 +118,19 @@ void HcalDigiToRawPatTest::analyze(const edm::Event& iEvent, const edm::EventSet
 
       }
 
+      // DEBUG *****************************
+      if(debug){
+        HcalDetId targetDetId(HcalBarrel, /*ieta=*/4, /*iphi=*/32, /*depth=*/2); 
+        if (crateId == 37 && slotId == 11 && fiber == 7){//detid == targetDetId) {
+          std::cout << "DetId: " <<detid<< "; crate:  " <<crateId<< "; slot:  " <<slotId<< "; fiber:  " <<fiber<< "; fiberCH:  " <<fiberChan<<std::endl;
+          std::cout << "TDC values: ";
+          for (int i = 0; i < qiedf.samples(); ++i) {
+    	    std::cout << qiedf[i].tdc() << " ";
+  	  }
+  	  std::cout << std::endl;
+        }
+      }
+      //**********************************
     }
   }
 
@@ -155,12 +170,12 @@ void HcalDigiToRawPatTest::fillDescriptions(edm::ConfigurationDescriptions& desc
   
   edm::ParameterSetDescription desc;
   desc.addUntracked<int>("Verbosity", 0);
-  desc.add<vector<int>>("tdc1", {12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-                                 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-                                 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12});
-  desc.add<vector<int>>("tdc2", {14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-                                 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-                                 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14});
+  desc.add<vector<int>>("tdc1", {18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12,
+                                 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12,
+                                 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12, 18, 12, 12, 12});
+  desc.add<vector<int>>("tdc2", {24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18,
+                                 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18,
+                                 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18, 24, 18, 18, 18});
   desc.add<std::string>("ElectronicsMap", "");
   desc.add<edm::InputTag>("QIE11", edm::InputTag("simHcalDigis", "HBHEQIE11DigiCollection"));
   descriptions.add("hcalDigiToRawPatTest", desc);
