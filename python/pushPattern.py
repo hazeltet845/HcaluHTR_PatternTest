@@ -34,14 +34,19 @@ def makeCommandListReset(cmdfpath):
             for cmd in seq:
                 of.write(cmd+"\n")
 
+        #zero fe_rams
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
+        #disable fe_rams
         seq = "link, fe_rams, setup, 0, 0, 0, quit, quit"
         writeSequence(seq)
+        #take out of debug mode
         seq = "trig, debug, N, quit"
         writeSequence(seq)
+        #QUESTION
         seq = "trig, fir, 1, -1, quit"
         writeSequence(seq)
+        #QUESTION (reset LUTs)
         seq = "trig, luts, 5, 0, -1, -1, quit"
         writeSequence(seq)
         seq = "trig, luts, 5, 1, -1, -1, quit"
@@ -58,11 +63,13 @@ def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit
             seq = sequence.strip().split(",")
             for cmd in seq:
                 of.write(cmd+"\n")
-
+        #Zero fe_rams
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
-        seq = "link, fe_rams, setup, 1, 1, 3000, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        #load pattern
+        seq = "link, fe_rams, setup, 1, 1, 460, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
         writeSequence(seq)
+        #set trig in debug mode
         seq = "trig, debug, Y, quit"
         writeSequence(seq)
 
@@ -89,6 +96,7 @@ def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit
 
         num_tls = 12
 
+        #save trigger links 
         for tl in range(num_tls):
             fpath = spyfpath + f"TL{tl}.txt"
             seq = "trig, spy, {}, {}, {}, quit".format(orbit_delay, tl, fpath)
@@ -111,7 +119,7 @@ def makeCommandList_local(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbi
         writeSequence(seq)
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
-        seq = "link, fe_rams, setup, 1, 1, 3000, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        seq = "link, fe_rams, setup, 1, 1, 460, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
         #seq = "link, fe_rams, setup, 1, 1, 0, load, /root/tdcUMnCode/hcal/hcalUHTR/scripts/uHTRtest/patterns/pattern_test.txt, -1, quit, quit"
        
         writeSequence(seq)
@@ -205,6 +213,8 @@ if __name__ == "__main__":
 
 
     elif local:
+        start = time.time()
+
         print("Pushing pattern to uHTR locally")
 
         cmdfpath      = f"{input_dir}/uHTR_commands_c{crate}_u{uHTR}.txt"
@@ -217,3 +227,6 @@ if __name__ == "__main__":
         makeCommandList_local(cmdfpath, input_dir, spyfpath, read_delay, orbit_delay, crate, uHTR)
         os.system("{} {} -s {} > {}".format(uhtrtool,local_ip,cmdfpath,outputfpath))
 
+        end = time.time()
+        tot = end - start
+        print(f"Total Time {tot}")
