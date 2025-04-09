@@ -61,10 +61,16 @@ def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit
 
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
-        seq = "link, fe_rams, setup, 1, 1, 0, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        seq = "link, fe_rams, setup, 1, 1, 3000, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
         writeSequence(seq)
         seq = "trig, debug, Y, quit"
         writeSequence(seq)
+
+        #QUESTION
+        writeSequence(seq)
+        seq = "link, init, 99, {}, -1, 1, quit".format(read_delay)
+
+        #QUESTION
         seq = "trig, fir, 1, -1, quit"
         writeSequence(seq)
 
@@ -105,7 +111,7 @@ def makeCommandList_local(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbi
         writeSequence(seq)
         seq = "link, fe_rams, zero, quit, quit"
         writeSequence(seq)
-        seq = "link, fe_rams, setup, 1, 1, 0, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        seq = "link, fe_rams, setup, 1, 1, 3000, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
         #seq = "link, fe_rams, setup, 1, 1, 0, load, /root/tdcUMnCode/hcal/hcalUHTR/scripts/uHTRtest/patterns/pattern_test.txt, -1, quit, quit"
        
         writeSequence(seq)
