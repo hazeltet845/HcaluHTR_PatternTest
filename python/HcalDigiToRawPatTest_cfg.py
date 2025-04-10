@@ -8,6 +8,7 @@ parser = argparse.ArgumentParser(description="Run HcalDigiToRawPatTest with argu
 
 parser.add_argument("-i", "--input", required=True, help="Path to input ROOT file")
 parser.add_argument("-n", "--num_events", type=int, required=True, help="Number of events to process")
+parser.add_argument("-s", "--skip_num", type=int, required=True, help="Number of events to skip")
 parser.add_argument("-g", "--global_tag", required=True, help="Global Tag")
 parser.add_argument("-e", "--era", required=True, help="Era")
 parser.add_argument("-o", "--output_tag", required = False,default="offload_out",help="Name of output file")
@@ -15,6 +16,7 @@ args = parser.parse_args()
 
 era = getattr(eras, args.era) #eras.Run3_2025
 event_num = args.num_events #3
+skip_num  = args.skip_num
 input_file = f"file:{args.input}" #file:/eos/user/e/ethazelt/cmssw/CMSSW_14_2_2/src/VLL_RAWSIM_ex.root
 global_tag = args.global_tag #140X_mcRun3_2024_realistic_v26
 output_file = f"output/offload/{args.output_tag}.root"
@@ -45,7 +47,8 @@ process.maxEvents = cms.untracked.PSet(
 )
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(input_file)
+    fileNames = cms.untracked.vstring(input_file),
+    skipEvents = cms.untracked.uint32(skip_num)
 )
 
 process.hcalRawData = cms.EDAnalyzer("HcalDigiToRawPatTest",

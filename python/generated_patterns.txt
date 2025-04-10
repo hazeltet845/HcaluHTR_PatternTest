@@ -1,0 +1,35 @@
+############### VLL M450 D1E-16 ###############
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-16_13p6TeV_GENSIMDIGIRAW.root -s 0 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-16_13p6TeV_offload_0-25"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-16_13p6TeV_0-25 -i VLLS_ele_M450_D1e-16_13p6TeV_offload_0-25 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-16_13p6TeV_GENSIMDIGIRAW.root -s 25 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-16_13p6TeV_offload_25-50"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-16_13p6TeV_25-50 -i VLLS_ele_M450_D1e-16_13p6TeV_offload_25-50 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-16_13p6TeV_GENSIMDIGIRAW.root -s 50 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-16_13p6TeV_offload_50-75"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-16_13p6TeV_50-75 -i VLLS_ele_M450_D1e-16_13p6TeV_offload_50-75 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-16_13p6TeV_GENSIMDIGIRAW.root -s 75 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-16_13p6TeV_offload_75-100"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-16_13p6TeV_75-100 -i VLLS_ele_M450_D1e-16_13p6TeV_offload_75-100 --all
+
+############### VLL M450 D1E-13 ###############
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-13_13p6TeV_GENSIMDIGIRAW.root -s 0 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-13_13p6TeV_offload_0-25"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-13_13p6TeV_0-25 -i VLLS_ele_M450_D1e-13_13p6TeV_offload_0-25 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-13_13p6TeV_GENSIMDIGIRAW.root -s 25 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-13_13p6TeV_offload_25-50"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-13_13p6TeV_25-50 -i VLLS_ele_M450_D1e-13_13p6TeV_offload_25-50 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-13_13p6TeV_GENSIMDIGIRAW.root -s 50 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-13_13p6TeV_offload_50-75"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-13_13p6TeV_50-75 -i VLLS_ele_M450_D1e-13_13p6TeV_offload_50-75 --all
+
+cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/MC_files/VLL_gen/VLLS_ele_M450_D1e-13_13p6TeV_GENSIMDIGIRAW.root -s 75 -n 25 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "VLLS_ele_M450_D1e-13_13p6TeV_offload_75-100"
+
+python3 genPattern.py -o VLLS_ele_M450_D1e-13_13p6TeV_75-100 -i VLLS_ele_M450_D1e-13_13p6TeV_offload_75-100 --all
