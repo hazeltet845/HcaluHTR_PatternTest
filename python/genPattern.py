@@ -14,6 +14,7 @@ def parseArgs():
     parser.add_argument("-a", "--all",        action="store_true", help="Create pattern for ALL crates and uHTRS")
     parser.add_argument("-c", "--crate",      action="store", help="Crate number for pattern generation")
     parser.add_argument("-u", "--uHTR",       action="store", help="uHTR number for pattern generation")
+    parser.add_argument("-f", "--fill_events",action="store", default=0,type=int, help="Number events to fill in between MC events")
 
     args = parser.parse_args()
 
@@ -60,7 +61,7 @@ def fillMissingChnls(df):
     fibchan_l = list(df["FibChan"])
     
     fill_adc = [0] * 8
-    fill_tdc = [3] * 8
+    fill_tdc = [0] * 8
     
     for i, chan in enumerate(fibchan_l):
         fill_adc[chan] = adc_l[i]
@@ -69,7 +70,7 @@ def fillMissingChnls(df):
     return pd.Series([fill_adc,fill_tdc])
 
 def printMissingChnls(group):
-    # Compute and print missing channels once per group
+    # Compute and print missing channel
     present_channels = set(group["FibChan"])
     all_channels = set(range(8))
     missing_channels = sorted(all_channels - present_channels)
@@ -81,9 +82,12 @@ def printMissingChnls(group):
 
     return fillMissingChnls(group)
 
-def patternWrite(df,outfile,crate,uHTR,max_BX):
+def patternWrite(df,outfile,crate,uHTR,max_BX, skip):
     
     num_fib = 24
+    
+    skip_BX = skip*10
+
     for fib in range(num_fib):
         #print(f"Crate == {crate} and Slot == {uHTR} and Fiber == {fib}")
         filt = df.query(f"Crate == {crate} and Slot == {uHTR} and Fiber == {fib}")
@@ -96,27 +100,42 @@ def patternWrite(df,outfile,crate,uHTR,max_BX):
 
             group.columns = ["ADC", "TDC"]
             group['TDC'] = group['TDC'].apply(createTDCWord)
-            
+           
+            capID_counter = 0
+
             for index, row in group.iterrows():
 
                 bc0 = 1 if index==0 else 0
                 ce = 0
-                capID = index%4 #doesnt matter
                 res = 0
 
                 byte0 = 0xbc #K28.5
-                byte1 = res<<4 | capID<<2 | ce<<1 | bc0
 
                 ADC = row['ADC']
                 TDC = row['TDC']
-            
-
+                if(skip_BX != 0): 
+                    if(((index % skip_BX)== 0) and index != 0 ):
+                        for k in range(skip_BX):
+                            capID = capID_counter % 4
+                            byte1_tmp = res << 4 | capID << 2 | ce << 1 | bc0
+                            outfile.write("1%02x%02x\n"%(byte1_tmp, byte0))
+                            outfile.write("0%02x%02x\n"%(0,0))
+                            outfile.write("0%02x%02x\n"%(0,0))
+                            outfile.write("0%02x%02x\n"%(0,0))
+                            outfile.write("0%02x%02x\n"%(0,0))
+                            outfile.write("0%04x\n"%(0))
+                            capID_counter += 1
+                
+                capID = capID_counter % 4
+                byte1 = (res << 4) | (capID << 2) | (ce << 1) | bc0
+                
                 outfile.write("1%02x%02x\n"%(byte1, byte0))
                 outfile.write("0%02x%02x\n"%(ADC[1],ADC[0]))
-                outfile.write("0%02x%02x\n"%( ADC[3],ADC[2] ))
-                outfile.write("0%02x%02x\n"%( ADC[5],ADC[4] ))
-                outfile.write("0%02x%02x\n"%( ADC[7],ADC[6] ))
+                outfile.write("0%02x%02x\n"%(ADC[3],ADC[2]))
+                outfile.write("0%02x%02x\n"%(ADC[5],ADC[4]))
+                outfile.write("0%02x%02x\n"%(ADC[7],ADC[6]))
                 outfile.write("0%04x\n"%(TDC))
+                capID_counter +=1
         #else:
             #print(f"No data for Crate/Slot/Fiber combo")
             #group = pd.DataFrame()
@@ -133,6 +152,7 @@ def main():
     all_uHTR    = args.all
     crate       = args.crate
     uHTR        = args.uHTR
+    fill_events = args.fill_events
 
 
     tree = uproot.open(input_file)['hcalRawData/UHTRTree']
@@ -164,13 +184,13 @@ def main():
             patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
             with open(patternfpath, 'w') as outfile:
                 print(f"Writing pattern to {patternfpath}")
-                patternWrite(df,outfile,crate,uHTR,max_BX)
+                patternWrite(df,outfile,crate,uHTR,max_BX,fill_events)
 
     else:
         patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
         with open(patternfpath, 'w') as outfile:
             print(f"Writing pattern to {patternfpath}")
-            patternWrite(df,outfile,crate,uHTR,max_BX)
+            patternWrite(df,outfile,crate,uHTR,max_BX,fill_events)
     
 
 

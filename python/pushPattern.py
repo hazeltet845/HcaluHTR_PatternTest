@@ -22,7 +22,11 @@ def parseArgs():
     parser.add_argument("--read_delay",      action="store",type=int,   default=144)
     parser.add_argument("--orbit_delay",     action="store",type=int,   default=8)
 
-
+    #live steps
+    parser.add_argument("--pattern",         action="store_true", help="Run pattern testing live")
+    parser.add_argument("--empty_pattern",   action="store_true", help="Run empty pattern testing live")
+    parser.add_argument("--reset",      action="store_true", help="Reset the uHTRs")
+    
     args = parser.parse_args()
 
     return args
@@ -43,21 +47,14 @@ def makeCommandListReset(cmdfpath):
         #take out of debug mode
         seq = "trig, debug, N, quit"
         writeSequence(seq)
-        #QUESTION
-        seq = "trig, fir, 1, -1, quit"
-        writeSequence(seq)
-        #QUESTION (reset LUTs)
-        seq = "trig, luts, 5, 0, -1, -1, quit"
-        writeSequence(seq)
-        seq = "trig, luts, 5, 1, -1, -1, quit"
-        writeSequence(seq)
 
         seq = "quit"
         writeSequence(seq)
 
         of.close()
 
-def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit_delay, crate, slot):
+
+def makeCommandList_empty(cmdfpath, pattern_dir_path, crate, slot):
     with open(cmdfpath, "w") as of:
         def writeSequence(sequence):
             seq = sequence.strip().split(",")
@@ -72,13 +69,26 @@ def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, read_delay, orbit
         #set trig in debug mode
         seq = "trig, debug, Y, quit"
         writeSequence(seq)
-
-        #QUESTION
+        
+        seq = "quit"
         writeSequence(seq)
-        seq = "link, init, 99, {}, -1, 1, quit".format(read_delay)
 
-        #QUESTION
-        seq = "trig, fir, 1, -1, quit"
+        of.close()
+
+def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, orbit_delay, crate, slot):
+    with open(cmdfpath, "w") as of:
+        def writeSequence(sequence):
+            seq = sequence.strip().split(",")
+            for cmd in seq:
+                of.write(cmd+"\n")
+        #Zero fe_rams
+        seq = "link, fe_rams, zero, quit, quit"
+        writeSequence(seq)
+        #load pattern
+        seq = "link, fe_rams, setup, 1, 1, 460, load, {}/pattern_c{}_u{}.txt, -1, quit, quit".format(pattern_dir_path,crate,slot)
+        writeSequence(seq)
+        #set trig in debug mode
+        seq = "trig, debug, Y, quit"
         writeSequence(seq)
 
 
@@ -179,7 +189,10 @@ if __name__ == "__main__":
     orbit_delay = args.orbit_delay
     local_ip    = args.ip
     uhtrtool    = args.uhtrtool
-
+    
+    pat         = args.pattern
+    empty_pat   = args.empty_pattern
+    reset  = args.reset
    
     if live:
         print("Live Test")
@@ -187,29 +200,45 @@ if __name__ == "__main__":
         crates = [20,21,24,25,30,31,34,35,37]
         slots = [1,2,4,5,7,8,10,11]
         
-        for c in crates:
-            for s in slots:
-               
-                cmdfpath      = f"{input_dir}/uHTR_commands_c{c}_u{s}.txt"
-                outputfpath   = f"{input_dir}/uHTR_commands_c{c}_u{s}_out.txt"
-                spyfpath      = f"{input_dir}/spy/spy_c{c}_u{s}"
-          
-                print(f"Injecting Pattern to Crate: {c} Slot: {s} ")
+        if(pat):
+            for c in crates:
+                for s in slots:
+                   
+                    cmdfpath      = f"{input_dir}/uHTR_commands_c{c}_u{s}.txt"
+                    outputfpath   = f"{input_dir}/uHTR_commands_c{c}_u{s}_out.txt"
+                    spyfpath      = f"{input_dir}/spy/spy_c{c}_u{s}"
+              
+                    print(f"Injecting Pattern to Crate: {c} Slot: {s} ")
 
-                makeCommandList_live(cmdfpath, input_dir, spyfpath, read_delay, orbit_delay, c, s)
-                #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,cmdfpath,outputfpath))
+                    makeCommandList_live(cmdfpath, input_dir, spyfpath, orbit_delay, c, s)
+                    #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,cmdfpath,outputfpath))
        
-        time.sleep(30)
+            time.sleep(30)
 
-        for c in crates:
-            for s in slots:
-                resetfpath    = f"{input_dir}/uHTR_reset_c{c}_u{s}.txt"
-                resetoutfpath = f"{input_dir}/uHTR_reset_c{c}_u{s}_out.txt"
+        if(empty_pat):
+            for c in crates:
+                for s in slots:
 
-                print(f"Resetting Crate: {c} Slot: {s} ")
+                    input_dir_tmp = f"{input_dir}/../empty_patterns"
+                    cmdfpath      = f"{input_dir_tmp}/uHTR_commands_c{c}_u{s}.txt"
 
-                makeCommandListReset(resetfpath)
-                #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,resetfpath,resetoutfpath))
+                    print(f"Injecting EMPTY Pattern to Crate: {c} Slot: {s} ")
+
+                    makeCommandList_empty(cmdfpath, input_dir_tmp, c, s)
+                    #os.system("{} -o bridge-hbhe -c {}:{} -s {}".format(uhtrtool,c,s,cmdfpath))
+
+            time.sleep(30)
+
+        if(reset):
+            for c in crates:
+                for s in slots:
+                    resetfpath    = f"{input_dir}/uHTR_reset_c{c}_u{s}.txt"
+                    resetoutfpath = f"{input_dir}/uHTR_reset_c{c}_u{s}_out.txt"
+
+                    print(f"Resetting Crate: {c} Slot: {s} ")
+
+                    makeCommandListReset(resetfpath)
+                    #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,resetfpath,resetoutfpath))
 
 
     elif local:
