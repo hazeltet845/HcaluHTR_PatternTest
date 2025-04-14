@@ -19,8 +19,8 @@ def parseArgs():
     parser.add_argument("--uhtrtool",        action="store",type=str, default="/opt/xdaq/bin/uHTRtool.exe")
     parser.add_argument("--ip",              action="store",type=str, default="192.168.1.12")
 
-    parser.add_argument("--read_delay",      action="store",type=int,   default=144)
-    parser.add_argument("--orbit_delay",     action="store",type=int,   default=8)
+    parser.add_argument("--read_delay",      action="store",type=int)#,   default=144)
+    parser.add_argument("--orbit_delay",     action="store",type=int)#,   default=8)
 
     #live steps
     parser.add_argument("--pattern",         action="store_true", help="Run pattern testing live")
@@ -212,8 +212,9 @@ if __name__ == "__main__":
 
                     makeCommandList_live(cmdfpath, input_dir, spyfpath, orbit_delay, c, s)
                     #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,cmdfpath,outputfpath))
-       
-            time.sleep(30)
+            
+            print("Pattern Loading Complete")       
+            time.sleep(120)
 
         if(empty_pat):
             for c in crates:
@@ -226,7 +227,7 @@ if __name__ == "__main__":
 
                     makeCommandList_empty(cmdfpath, input_dir_tmp, c, s)
                     #os.system("{} -o bridge-hbhe -c {}:{} -s {}".format(uhtrtool,c,s,cmdfpath))
-
+            print("Pattern Loading Complete")
             time.sleep(30)
 
         if(reset):
@@ -240,7 +241,7 @@ if __name__ == "__main__":
                     makeCommandListReset(resetfpath)
                     #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,resetfpath,resetoutfpath))
 
-
+            print("Reset Complete")
     elif local:
         start = time.time()
 
