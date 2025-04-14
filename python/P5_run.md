@@ -119,6 +119,13 @@ RESET:
 
 	python3 pushPattern.py -i ABSPATH/output/patterns/VLLS_ele_M750_D1e-16_13p6TeV_25EV/VLLS_ele_M750_D1e-16_13p6TeV_0-25_25EV --live --reset
 
+# Monitoring
+
+https://cmsoms.cern.ch/cms/triggers/l1_rates?cms_run=366451&props.11273_11270.selectedCells=L1A%20physics:2
+
+https://cmsweb.cern.ch/dqm/online/start?runnr=364292;dataset=/Global/Online/ALL;sampletype=online_data;filter=all;referencepos=overlay;referenceshow=customise;referencenorm=True;referenceobj1=refobj;referenceobj2=none;referenceobj3=none;referenceobj4=none;search=;striptype=object;stripruns=;stripaxis=run;stripomit=none;workspace=HCAL;size=M;root=Quick%20collection;focus=;zoom=no
+
+
 # Resources
 
 https://indico.cern.ch/event/1532012/
