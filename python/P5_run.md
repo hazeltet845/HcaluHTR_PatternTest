@@ -9,6 +9,10 @@ SSH:
 Source this:
 
 	source ~hcalsw/bin/env.sh
+
+MAYBE: Dump all uHTR registers:
+
+ 	∼hcalsw/bin/dump.sh
  
 Put uHTRtool.exe location into pushPattern.py. Make sure that uhtrtool is working and look at configurations.
 
