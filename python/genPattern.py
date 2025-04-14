@@ -82,7 +82,7 @@ def printMissingChnls(group):
 
     return fillMissingChnls(group)
 
-def patternWrite(df,outfile,crate,uHTR,max_BX, skip):
+def patternWrite(df,outfile,crate,uHTR,BX_diff, skip):
     
     num_fib = 24
     
@@ -109,12 +109,24 @@ def patternWrite(df,outfile,crate,uHTR,max_BX, skip):
                 ce = 0
                 res = 0
 
+                capID = capID_counter % 4
+
                 byte0 = 0xbc #K28.5
+                byte1 = res << 4 | capID << 2 | ce << 1 | bc0
 
                 ADC = row['ADC']
                 TDC = row['TDC']
+    
+                outfile.write("1%02x%02x\n"%(byte1, byte0))
+                outfile.write("0%02x%02x\n"%(ADC[1],ADC[0]))
+                outfile.write("0%02x%02x\n"%(ADC[3],ADC[2]))
+                outfile.write("0%02x%02x\n"%(ADC[5],ADC[4]))
+                outfile.write("0%02x%02x\n"%(ADC[7],ADC[6]))
+                outfile.write("0%04x\n"%(TDC))
+                capID_counter +=1
+
                 if(skip_BX != 0): 
-                    if(((index % skip_BX)== 0) and index != 0 ):
+                    if(((index % BX_diff)== 0) and index != 0 ):
                         for k in range(skip_BX):
                             capID = capID_counter % 4
                             byte1_tmp = res << 4 | capID << 2 | ce << 1 | bc0
@@ -126,17 +138,7 @@ def patternWrite(df,outfile,crate,uHTR,max_BX, skip):
                             outfile.write("0%04x\n"%(0))
                             capID_counter += 1
                 
-                capID = capID_counter % 4
-                byte1 = (res << 4) | (capID << 2) | (ce << 1) | bc0
-                
-                outfile.write("1%02x%02x\n"%(byte1, byte0))
-                outfile.write("0%02x%02x\n"%(ADC[1],ADC[0]))
-                outfile.write("0%02x%02x\n"%(ADC[3],ADC[2]))
-                outfile.write("0%02x%02x\n"%(ADC[5],ADC[4]))
-                outfile.write("0%02x%02x\n"%(ADC[7],ADC[6]))
-                outfile.write("0%04x\n"%(TDC))
-                capID_counter +=1
-        #else:
+            #else:
             #print(f"No data for Crate/Slot/Fiber combo")
             #group = pd.DataFrame()
             #group['bunchCrossing'] = np.arange(1,max_BX+1)
@@ -169,6 +171,8 @@ def main():
     df = df.drop('uhtrData', axis=1)
     
     max_BX = df['bunchCrossing'].max()
+    min_BX = df['bunchCrossing'].min()
+    BX_diff = max_BX - min_BX
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -184,13 +188,13 @@ def main():
             patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
             with open(patternfpath, 'w') as outfile:
                 print(f"Writing pattern to {patternfpath}")
-                patternWrite(df,outfile,crate,uHTR,max_BX,fill_events)
+                patternWrite(df,outfile,crate,uHTR,BX_diff,fill_events)
 
     else:
         patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
         with open(patternfpath, 'w') as outfile:
             print(f"Writing pattern to {patternfpath}")
-            patternWrite(df,outfile,crate,uHTR,max_BX,fill_events)
+            patternWrite(df,outfile,crate,uHTR,BX_diff,fill_events)
     
 
 
