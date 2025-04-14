@@ -115,3 +115,9 @@ RESET:
 
 	python3 pushPattern.py -i ABSPATH/output/patterns/VLLS_ele_M750_D1e-16_13p6TeV_25EV/VLLS_ele_M750_D1e-16_13p6TeV_0-25_25EV --live --reset
 
+# Resources
+
+https://indico.cern.ch/event/1532012/
+
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/HcalDaqOnCallHowTo
+
