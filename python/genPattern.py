@@ -126,7 +126,7 @@ def patternWrite(df,outfile,crate,uHTR,BX_diff, skip):
                 capID_counter +=1
 
                 if(skip_BX != 0): 
-                    if(((index % BX_diff)== 0) and index != 0 ):
+                    if(((index % 9)== 0) and index != 0 ):
                         for k in range(skip_BX):
                             capID = capID_counter % 4
                             byte1_tmp = res << 4 | capID << 2 | ce << 1 | bc0
