@@ -82,7 +82,7 @@ def printMissingChnls(group):
 
     return fillMissingChnls(group)
 
-def patternWrite(df,outfile,crate,uHTR,BX_diff, skip):
+def patternWrite(df,outfile,crate,uHTR, skip):
     
     num_fib = 24
     
@@ -171,7 +171,6 @@ def main():
     
     max_BX = df['bunchCrossing'].max()
     min_BX = df['bunchCrossing'].min()
-    BX_diff = max_BX - min_BX
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -187,13 +186,13 @@ def main():
             patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
             with open(patternfpath, 'w') as outfile:
                 print(f"Writing pattern to {patternfpath}")
-                patternWrite(df,outfile,crate,uHTR,BX_diff,fill_events)
+                patternWrite(df,outfile,crate,uHTR,fill_events)
 
     else:
         patternfpath = f"{output_dir}/pattern_c{crate}_u{uHTR}.txt"
         with open(patternfpath, 'w') as outfile:
             print(f"Writing pattern to {patternfpath}")
-            patternWrite(df,outfile,crate,uHTR,BX_diff,fill_events)
+            patternWrite(df,outfile,crate,uHTR,fill_events)
     
 
 
