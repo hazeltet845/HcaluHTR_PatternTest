@@ -125,18 +125,17 @@ def patternWrite(df,outfile,crate,uHTR,BX_diff, skip):
                 outfile.write("0%04x\n"%(TDC))
                 capID_counter +=1
 
-                if(skip_BX != 0): 
-                    if(((index % 9)== 0) and index != 0 ):
-                        for k in range(skip_BX):
-                            capID = capID_counter % 4
-                            byte1_tmp = res << 4 | capID << 2 | ce << 1 | bc0
-                            outfile.write("1%02x%02x\n"%(byte1_tmp, byte0))
-                            outfile.write("0%02x%02x\n"%(0,0))
-                            outfile.write("0%02x%02x\n"%(0,0))
-                            outfile.write("0%02x%02x\n"%(0,0))
-                            outfile.write("0%02x%02x\n"%(0,0))
-                            outfile.write("0%04x\n"%(0))
-                            capID_counter += 1
+                if(skip_BX != 0 and (index + 1) % 10 == 0):
+                    for k in range(skip_BX):
+                        capID = capID_counter % 4
+                        byte1_tmp = res << 4 | capID << 2 | ce << 1 | bc0
+                        outfile.write("1%02x%02x\n"%(byte1_tmp, byte0))
+                        outfile.write("0%02x%02x\n"%(0,0))
+                        outfile.write("0%02x%02x\n"%(0,0))
+                        outfile.write("0%02x%02x\n"%(0,0))
+                        outfile.write("0%02x%02x\n"%(0,0))
+                        outfile.write("0%04x\n"%(0))
+                        capID_counter += 1
                 
             #else:
             #print(f"No data for Crate/Slot/Fiber combo")

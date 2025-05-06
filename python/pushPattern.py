@@ -91,19 +91,7 @@ def makeCommandList_live(cmdfpath, pattern_dir_path, spyfpath, orbit_delay, crat
         seq = "trig, debug, Y, quit"
         writeSequence(seq)
 
-
-        if False:
-            seq = "link, fe_rams, dump, {}.dump, quit, quit".format(patternfpath)
-            writeSequence(seq)
-            seq = "trig, luts, 2, 0, {}/c{}_s{}/LUT0.dump, -1, quit".format(pattern_dir_path,crate,slot)
-            writeSequence(seq)
-            seq = "trig, luts, 2, 1, {}/c{}_s{}/LUT1.dump, -1, quit".format(pattern_dir_path,crate,slot)
-            writeSequence(seq)
-            seq = "trig, luts, 2, 2, {}/c{}_s{}/LUT2.dump, -1, quit".format(pattern_dir_path,crate,slot)
-            writeSequence(seq)
-            seq = "trig, luts, 2, 3, {}/c{}_s{}/LUT3.dump, -1, quit".format(pattern_dir_path,crate,slot)
-            writeSequence(seq)
-
+    
         num_tls = 12
 
         #save trigger links 
@@ -214,7 +202,6 @@ if __name__ == "__main__":
                     #os.system("{} -o bridge-hbhe -c {}:{} -s {} > {}".format(uhtrtool,c,s,cmdfpath,outputfpath))
             
             print("Pattern Loading Complete")       
-            time.sleep(120)
 
         if(empty_pat):
             for c in crates:
@@ -228,7 +215,6 @@ if __name__ == "__main__":
                     makeCommandList_empty(cmdfpath, input_dir_tmp, c, s)
                     #os.system("{} -o bridge-hbhe -c {}:{} -s {}".format(uhtrtool,c,s,cmdfpath))
             print("Pattern Loading Complete")
-            time.sleep(30)
 
         if(reset):
             for c in crates:
