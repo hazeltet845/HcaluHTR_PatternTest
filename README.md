@@ -1,7 +1,7 @@
 # Setup Working Environment
 
     cmsrel CMSSW_15_0_0
-    cd $CMSSW_BASE/src
+    cd CMSSW_15_0_0/src
     cmsenv
 
     git cms-init
