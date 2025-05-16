@@ -13,8 +13,6 @@ The QIE11 data must be offloaded from the input root file in a format that makes
 
 #### Example:
 
-    cd $CMSSW_BASE/src/uHTRStudies/PatTest/python
-
     cmsRun HcalDigiToRawPatTest_cfg.py -i /eos/user/e/ethazelt/cmssw/CMSSW_14_2_2/src/VLL_RAWSIM_ex.root -n 3 -g "140X_mcRun3_2024_realistic_v26" -e "Run3_2025" -o "outputFile"
 
 # Generate Patterns
@@ -31,8 +29,6 @@ The offloaded output file is utilized by `python/genPattern.py` to generate .txt
       -f, --fill_events        Number of events (10 BXs each) to fill with empty patterns in between MC events
 
 #### Example:
-
-    cd $CMSSW_BASE/src/uHTRStudies/PatTest/python
     
     python3 genPattern.py -o directory_test -i outputFile --all
 
@@ -61,8 +57,6 @@ The patterns can be fed into a local teststand or fed live to the uHTRS in HB at
 
 Insert pattern only:
 
-    cd $CMSSW_BASE/src/uHTRStudies/PatTest/python
-
     python3 pushPattern.py -i ABSPATH/output/patterns/VLLS_ele_M750_D1e-16_13p6TeV_25EV/VLLS_ele_M750_D1e-16_13p6TeV_0-25_25EV --live --pattern --orbit_delay 8  --uhtrtool "/opt/xdaq/bin/uHTRtool.exe"
 
 Insert empty pattern:
@@ -75,8 +69,6 @@ Reset uHTRs:
 
 
 #### Example: Local
-
-    cd $CMSSW_BASE/src/uHTRStudies/PatTest/python
 
     python3 pushPattern.py -i "/root/tdcUMnCode/hcal/hcalUHTR/scripts/uHTRtest/HcaluHTR_PatternTest/python/output/patterns/directory_test" -c 21 -u 4 --local --read_delay 14 --orbit_delay 8 --ip "192.168.X.X" --uhtrtool "/home/daqowner/daq.15.4.0/bin/uHTRtool.exe"
     
