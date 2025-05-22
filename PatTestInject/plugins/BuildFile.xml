@@ -14,8 +14,6 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="PhysicsTools/Utilities"/>
 
-<use name="uHTRStudies/PatTest"/>
-
 <library file="HcalDigiToRawPatTest.cc" name="HcalDigiToRawPatTest">
   <flags EDM_PLUGIN="1"/>
 </library>

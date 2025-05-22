@@ -1,0 +1,9 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/Utilities"/>
+<use name="DataFormats/HLTReco"/>
+
+<library file="MCAnalyzer.cc" name="MCAnalyzer">
+  <flags EDM_PLUGIN="1"/>
+</library>
+
