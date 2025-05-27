@@ -7,7 +7,7 @@ event_num  = 200
 process = cms.Process("CheckTrig", eras.Run3_2025)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 500
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(event_num)

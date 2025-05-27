@@ -31,6 +31,18 @@ int ietaFromEta(float eta) {
     return (eta > 0) ? ieta : -ieta;
 }
 
+int iphiFromPhi(float phi) {
+    // Normalize phi to range [0, 2π)
+    float phi2pi = fmod(phi + 2 * M_PI, 2 * M_PI);
+
+    // Map to iPhi: 1 to 72
+    int iphi = int(phi2pi / (2 * M_PI / 72)) + 1;
+
+    // Ensure iPhi is in [1, 72]
+    if (iphi > 72) iphi = 72;
+    return iphi;
+}
+
 
 void MCAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   edm::Handle<trigger::TriggerFilterObjectWithRefs> trigFilter;
@@ -44,9 +56,8 @@ void MCAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       const size_t sizeJetRefVector = jetRefVector.size();
       for (size_t i = 0; i != sizeJetRefVector; i++) {
         l1t::JetRef obj = l1t::JetRef(jetRefVector[i]);
-        cout << "\tL1Jet     " << "\t" << "pt = " << obj->pt() << "\t" << "eta =  " << obj->eta() << "\t"
-                               << "phi =  " << obj->phi() << endl;  //<< "\t" << "BX = " << obj->bx();
-        cout << "ieta == " << ietaFromEta(obj->eta()) << endl;
+        cout << "\tL1Jet     " << "\t" << "pt = " << obj->pt() << "\t" << "ieta =  " << ietaFromEta(obj->eta()) << "\t"
+                               << "iphi =  " << iphiFromPhi(obj->phi()) << endl;
       }
     }
   }
