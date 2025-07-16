@@ -1,0 +1,2 @@
+cmsDriver.py l1Ntuple -s RAW2DIGI --python_filename=data.py -n 1000 --no_exec --no_output --era=Run3 --data --conditions=auto:phase1_2025_realistic --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW  --customise=L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --filein=file:/eos/cms/store/group/dpg_hcal/comm_hcal/PatternTesting2025/run390757_b9800f9b-3124-4001-9f20-0a77d7f49df1.root
+
