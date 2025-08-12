@@ -49,15 +49,16 @@ void MCAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByToken(tokTrigFilter_,trigFilter);
 
   if (trigFilter.isValid()) {
+    cout<< "Event " << iEvent.id().event()<< endl;
     if (trigFilter->l1tjetSize() != 0) {
-      cout<< "Event " << iEvent.id().event()<< " passed LLP filter w/ l1tjetSize == " << trigFilter->l1tjetSize()  << endl;
+      cout<< "Event " << iEvent.id().event()<< " passed SingleLLPJet60 w/ l1tjetSize == " << trigFilter->l1tjetSize()  << endl;
       vector<l1t::JetRef> jetRefVector;
       trigFilter->getObjects(trigger::TriggerL1Jet, jetRefVector);
       const size_t sizeJetRefVector = jetRefVector.size();
       for (size_t i = 0; i != sizeJetRefVector; i++) {
         l1t::JetRef obj = l1t::JetRef(jetRefVector[i]);
         cout << "\tL1Jet     " << "\t" << "pt = " << obj->pt() << "\t" << "ieta =  " << ietaFromEta(obj->eta()) << "\t"
-                               << "iphi =  " << iphiFromPhi(obj->phi()) << endl;
+                               << "iphi =  " << iphiFromPhi(obj->phi()) << endl; 
       }
     }
   }
